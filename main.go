@@ -18,7 +18,6 @@ import (
 const (
 	screenWidth  = 960
 	screenHeight = 600
-	eps          = 0.000001
 )
 
 type game struct {
@@ -28,7 +27,6 @@ type game struct {
 }
 
 func NewGame() *game {
-
 	return &game{
 		func(x float64) float64 { return math.Tan(x) },
 		func() *plot.Plot {
@@ -53,7 +51,7 @@ func (g *game) Update() error {
 	f.Color = color.RGBA{255, 255, 255, 255}
 	g.p.Add(f)
 
-	t := plotter.NewFunction(GetTangent(g.f, GetCursorX(g.p)))
+	t := plotter.NewFunction(GetTangent(g.f, GetCursorX(g.p), 10e-6))
 	t.Color = color.RGBA{255, 255, 255, 255}
 	g.p.Add(t)
 
@@ -88,19 +86,11 @@ func GetCursorX(p *plot.Plot) float64 {
 	return x/(screenWidth/(p.X.Max-p.X.Min)) + p.X.Min
 }
 
-func GetTangent(f func(float64) float64, x0 float64) func(float64) float64 {
-	// TODO:
-	// 1. Get cursor's X coordinate +
-	// 2. Draw an according tangent
-	// 2.1. Calculate f(x) +
-	// 2.2. Calculate f'(x)
-	// 2.3. Calculate b
-	// 2.5. Draw the line
+func GetTangent(f func(float64) float64, x0 float64, eps float64) func(float64) float64 {
 	x1 := x0 + eps
 	y0, y1 := f(x0), f(x1)
 	k := (y1 - y0) / (x1 - x0)
-	b := y0 - k*x0
 	return func(x float64) float64 {
-		return k*x + b
+		return k*x + (y0 - k*x0)
 	}
 }
