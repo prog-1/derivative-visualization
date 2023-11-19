@@ -19,9 +19,7 @@ const (
 )
 
 type game struct {
-	f     func(float64) float64
-	color color.RGBA
-	p     *plot.Plot
+	p *plot.Plot
 }
 
 func NewGame() *game {
@@ -31,18 +29,17 @@ func NewGame() *game {
 	p.Y.Min = -10
 	p.Y.Max = 10
 
+	graph := plotter.NewFunction(func(x float64) float64 { return math.Sin(x) })
+	graph.Color = color.RGBA{0, 0, 255, 255}
+	p.Add(graph)
+
 	return &game{
-		func(x float64) float64 { return math.Sin(x) },
-		color.RGBA{0, 0, 255, 255},
 		p,
 	}
 }
 
 func (g *game) Layout(outWidth, outHeight int) (w, h int) { return screenWidth, screenHeight }
 func (g *game) Update() error {
-	graph := plotter.NewFunction(g.f)
-	graph.Color = g.color
-	g.p.Add(graph)
 	return nil
 }
 func (g *game) Draw(screen *ebiten.Image) {
