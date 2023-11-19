@@ -4,6 +4,7 @@ import (
 	"image"
 	"image/color"
 	"log"
+	"math"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"gonum.org/v1/plot"
@@ -24,10 +25,16 @@ type game struct {
 }
 
 func NewGame() *game {
+	p := plot.New()
+	p.X.Min = -10
+	p.X.Max = 10
+	p.Y.Min = -10
+	p.Y.Max = 10
+
 	return &game{
-		func(x float64) float64 { return x * x },
+		func(x float64) float64 { return math.Sin(x) },
 		color.RGBA{0, 0, 255, 255},
-		plot.New(),
+		p,
 	}
 }
 
