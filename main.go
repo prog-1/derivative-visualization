@@ -33,7 +33,7 @@ func NewGame() *game {
 		func(x float64) float64 { return math.Tan(x) },
 		func() *plot.Plot {
 			p := plot.New()
-			p.X.Min = 0
+			p.X.Min = -10
 			p.X.Max = 10
 			p.Y.Min = -10
 			p.Y.Max = 10
@@ -85,7 +85,7 @@ func DrawPlot(screen *ebiten.Image, p *plot.Plot) {
 func GetCursorX(p *plot.Plot) float64 {
 	tmpx, _ := ebiten.CursorPosition()
 	x := float64(tmpx)
-	return x / (screenWidth / (p.X.Max - p.X.Min))
+	return x/(screenWidth/(p.X.Max-p.X.Min)) + p.X.Min
 }
 
 func GetTangent(f func(float64) float64, x0 float64) func(float64) float64 {
